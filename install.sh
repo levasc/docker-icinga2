@@ -146,6 +146,16 @@ EOF
 # wget -q --no-cookies -O - https://github.com/Icinga/icingaweb2-module-director/archive/v1.4.3.tar.gz | tar xz --strip-components=1 --directory=/usr/share/icingaweb2/modules/director --exclude=.gitignore -f -
 # ln -s /usr/share/icingaweb2/modules/director/ /etc/icingaweb2/enabledModules/director
 
+#installing ipl module
+
+MODULE_NAME=ipl
+MODULE_VERSION=v0.5.0
+REPO="https://github.com/Icinga/icingaweb2-module-${MODULE_NAME}"
+MODULES_PATH="/usr/share/icingaweb2/modules"
+git clone ${REPO} "${MODULES_PATH}/${MODULE_NAME}" --branch "${MODULE_VERSION}"
+icingacli module enable "${MODULE_NAME}"
+
+
 #Graphite
 mkdir -p /usr/share/icingaweb2/modules/graphite
 wget -q --no-cookies -O - "https://github.com/Icinga/icingaweb2-module-graphite/archive/v1.0.1.tar.gz" | tar xz --strip-components=1 --directory=/usr/share/icingaweb2/modules/graphite -f -
