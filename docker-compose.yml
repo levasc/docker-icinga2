@@ -53,7 +53,7 @@ services:
     #:  - "5665:5665"
 
     labels:
-      - traefik.http.routers.icinga2.rule=Host(`icinga2.localhost`)
+      - traefik.http.routers.icinga2.rule=Host(`icinga2.docker2.minerva.lt`)
 
   graphite:
     image: graphiteapp/graphite-statsd
