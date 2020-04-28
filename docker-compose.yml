@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    # The official v2 Traefik docker image
+    image: traefik:v2.1
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --api.insecure=true --providers.docker
+    ports:
+      # The HTTP port
+      - "80:80"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+
+
+# ...
+# whoami:
+#    # A container that exposes an API to show its IP address
+#    image: containous/whoami
+#    labels:
+#      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.minerva.lt`)"
+
+
+  icinga2:
+    build:  . 
+    # image: adito/icinga2
+    environment:
+      - ICINGA_PASS=liutasleo1
+      - SWAPSERVICEOFF=true
+      - DISCSERVICEOFF=true
+      - APIUSER=icingaweb2
+      - APIPASS=532545sdasd
+      - ENABLEGRAPHITE=true
+      - GRAPHITE_TRANS=http
+      - GRAPHITE_WEBHOST=graphite
+      - GRAPHITE_WEBSITE_PORT=
+      - GRAPHITE_USER=
+      - GRAPHITE_HOST=graphite
+      - GRAPHITE_PORT=2003
+      - EMAILADDR=levas.cernovas@gmail.com
+      - NSCAPASS=pass
+      - NSCAPORT=5667
+
+    volumes:
+      - /storage/icingaweb2:/icingaweb2
+      - /storage/icinga2:/icinga2conf
+      - /storage/mysql:/mysql
+    hostname: icinga2.localhost
+    #ports:
+    #:  - "5665:5665"
+
+    labels:
+      - traefik.http.routers.icinga2.rule=Host(`icinga2.localhost`)
+
+  graphite:
+    image: graphiteapp/graphite-statsd
+    ports:
+      - "2003-2004:2003-2004"
+      - "2023-2024:2023-2024"
+      - "8125:8125/udp"
+      - "8126:8126"
+
+    volumes:
+      - /storage/graphite/conf:/opt/graphite/conf
+      - /storage/graphite/storage:/opt/graphite/storage
+
